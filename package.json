@@ -1,9 +1,9 @@
 {
-  "name": "ice-3",
+  "name": "lab-1",
   "version": "1.0.0",
-  "description": "Repo for WEBD6201-W2022 ICE-3",
+  "description": "Repo for WEBD6201-W2022 Lab-1",
   "main": "index.js",
-  "author": "Kellen McComb",
+  "author": "Kellen McComb & Arbin Chowdhury",
   "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
