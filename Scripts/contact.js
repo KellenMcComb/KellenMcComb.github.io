@@ -1,5 +1,6 @@
-"use strict";
-class Contact
+(function (core)
+{
+    class Contact
 {
     // getters and setters (declared above constructor)
     get FullName()
@@ -65,3 +66,7 @@ class Contact
         return `Full Name: ${this.FullName} \nContact Number: ${this.ContactNumber} \nEmail Address: ${this.EmailAddress}`
     }
 }
+
+    core.Contact = Contact;
+})(core || (core = {}));
+
