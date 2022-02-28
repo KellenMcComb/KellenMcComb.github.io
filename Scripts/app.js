@@ -1,6 +1,36 @@
-// IIFE -- Immediately Invoked Function Expression - (function(){})()
-// AKA anonymous self-executing function
+// Authors: Kellen McComb (100528029) & Arbin Chowdhury (100736044)
+// Date: 2022-02-26
+
 "use strict";
+
+/**
+ * User class created for registered users of the system as per Lab 2 requirements
+ *
+ * @class User
+ */
+class User
+    {
+
+        // ==== Lab 2g ====
+        
+        // Constructor for User
+        constructor(firstName = "", lastName = "", username ="", email = "", password = "")
+        {
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.Email = email;
+            this.Username = username;
+            this.Password = password;
+        }
+
+        // Overridden toString() function to print out details of the user
+        toString()
+        {
+            return `Full name: ${this.FirstName} ${this.LastName}\nEmail Address: ${this.Email}\nUsername: ${this.Username}`;
+        }
+    }
+
+// IIFE
 (function()
 {
     /**
@@ -45,6 +75,10 @@
         CheckLogin();
     }
 
+    /**
+     * Function that displays some learning exercises on the home page
+     *
+     */
     function DisplayHome()
     {
         console.log("Home Page");
@@ -59,7 +93,7 @@
 
         $("body").append(`<article class="container">
             <p id="ArticleParagraph" class="mt-3">This is the Article Paragraph!</p>
-            </article>`)
+            </article>`);
     }
 
 
@@ -102,37 +136,85 @@
      * Validates an input text field in the form and displays error 
      * in the message area if invalid
      *
-     * @param {string} input_field_ID
-     * @param {RegExp} regular_expression
-     * @param {string} error_message
+     * @param {string} input_field_ID the id of the element to access
+     * @param {RegExp} regular_expression the regex to validate the user input
+     * @param {string} error_message the error message to show if the input is not valid
+     * @param {string} message_area_name the id of the message area to display the error message
      */
-     function ValidateField(input_field_ID, regular_expression, error_message)
+    function ValidateField(input_field_ID, regular_expression, error_message, message_area_name)
      {
-         let messageArea = $("#messageArea").hide();
+         // ==== Lab 2e(2/2) ====
+
+         // variable message area name based on added 4th parameter of function
+         let messageArea = $(message_area_name).hide();
          
          $("#" + input_field_ID).on("blur", function()
          {
              let inputFieldText = $(this).val();
- 
-             if(!regular_expression.test(inputFieldText))
+
+             // If the chosen field is not empty and fails the regex test, OR...
+             if(inputFieldText && !regular_expression.test(inputFieldText) || 
+             // ... if the passwords both have input and do not match...
+                ($("#password").val() && $("#confirmPassword").val() &&
+                 $("#password").val() != $("#confirmPassword").val()))
              {
-                 $(this).trigger("focus").trigger("select"); 
-                 messageArea.addClass("alert alert-danger").text(error_message).show(); 
+                // ... focus on the incorrect field, and display the error message
+                $(this).trigger("focus"); 
+                messageArea.addClass("alert alert-danger").text(error_message).show(); 
+
+                // If error was solely due to mismatched passwords, update error message to more appropriate one
+                if($("#password").val() != $("#confirmPassword").val() &&
+                    $("#password").val().length > 5 && 
+                    $("#confirmPassword").val().length > 5)
+                {
+                    messageArea.text("Your passwords must match.");
+                }
+
+                // Clear the value of the incorrect field
+                $(this).val("");
              }
+             // If it passes, remove the error and hide
              else
              {
-                 messageArea.removeAttr("class").hide();
+                messageArea.removeAttr("class").hide();
              }
          });
      }
 
-     function ContactFormValidation()
+    /**
+     * Validation for the Contact Form
+     *
+     */
+    function ContactFormValidation()
     {
-        ValidateField("fullName", /^([A-Z][a-z]{1,3}\.?\s)?([A-Z][a-z]{1,})+([\s,-]([A-Z][a-z]{1,}))*$/,"Please enter a valid Full Name.");
-        ValidateField("contactNumber", /^(\+\d{1,3}[\s-.])?\(?\d{3}\)?[\s-.]?\d{3}[\s-.]?\d{4}$/, "Please enter a valid Contact Number.");
-        ValidateField("emailAddress", /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}$/, "Please enter a valid Email Address.");
+        ValidateField("fullName", /^([A-Z][a-z]{1,3}\.?\s)?([A-Z][a-z]{1,})+([\s,-]([A-Z][a-z]{1,}))*$/,"Please enter a valid Full Name.", "#messageArea");
+        ValidateField("contactNumber", /^(\+\d{1,3}[\s-.])?\(?\d{3}\)?[\s-.]?\d{3}[\s-.]?\d{4}$/, "Please enter a valid Contact Number.", "#messageArea");
+        ValidateField("emailAddress", /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}$/, "Please enter a valid Email Address.", "#messageArea");
     }
 
+    /**
+     * Validation for the Register Form
+     *
+     */
+    function RegisterFormValidation()
+    {
+        // // ==== Lab 2c, 2d, 2e(1/2) ====
+        ValidateField("firstName", /([A-Za-z]){2,}$/, 
+            "Your first name must be at least 2 characters.", "#ErrorMessage");
+        ValidateField("lastName", /([A-Za-z]){2,}$/, 
+            "Your last name must be at least 2 characters.", "#ErrorMessage");
+        ValidateField("emailAddress", /^[a-zA-Z0-9.@]{8,}\b$/, 
+            "Your email address must be at least 8 characters and contain an @ symbol.", "#ErrorMessage");
+        ValidateField("password", /[A-Za-z0-9!@#$%^&()]{6,}$/, 
+            "Your passwords must contain at least 6 characters.", "#ErrorMessage");
+        ValidateField("confirmPassword", /[A-Za-z0-9!@#$%^&()]{6,}$/, 
+            "Your passwords must contain at least 6 characters.", "#ErrorMessage");
+    }
+
+    /**
+     * Function to display the Contact page
+     *
+     */
     function DisplayContactPage()
     {
         console.log("Contact Us Page");
@@ -152,6 +234,10 @@
     }
 
 
+    /**
+     * Function to display the Contact List page
+     *
+     */
     function DisplayContactListPage()
     {
         console.log("Contact-List Page");
@@ -212,6 +298,10 @@
         }
     }
 
+    /**
+     * Function to display the Edit page
+     *
+     */
     function DisplayEditPage()
     {
         console.log("Edit Page");
@@ -282,6 +372,10 @@
         }
     }
 
+    /**
+     * Function to display the Login page
+     *
+     */
     function DisplayLoginPage()
     {
         console.log("Login Page");
@@ -296,7 +390,7 @@
             let newUser = new core.User();
 
             // use jQuery shortcut to lod the users.json file
-            $.get("./Data/users.json", function(data)
+            $.get("./Assets/users.json", function(data)
             {
                 // for every user in the users.json file, loop
                 for (const user of data.users) 
@@ -342,11 +436,31 @@
         });
     }
 
+    /**
+     * Function that checks if a user is logged in, then modifies the nav bar based on result
+     *
+     */
     function CheckLogin()
     {
+
         // if user is logged in, then...
         if(sessionStorage.getItem("user"))
         {
+            // ==== Lab 2a ====
+
+            // get the user's username from the user info in session storage
+            let currentUser = sessionStorage.getItem("user");
+            let userDataArray = currentUser.split(",");
+            
+            // Set alias "currentUsername" for the 3rd item in the userDataArray, which is the username
+            let currentUsername = userDataArray[2];
+
+            // insert the current username into the navbar before the login link
+            $(`<li class="nav-item">
+            <a class="nav-link"> ${currentUsername}</a>
+            </li>`).insertBefore("#login");
+
+
             // swap out the login link for logout
             $("#login").html(
                 `<a id="logout" class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>`
@@ -363,13 +477,79 @@
         }
     }
 
+    /**
+     * Function to display the Register page
+     *
+     */
     function DisplayRegisterPage()
     {
         console.log("Register Page");
+
+        // ==== Lab 2b ====
+
+        // Insert a div element with id "ErrorMessage" before the registerForm
+        $(`<div id="ErrorMessage"></div>`).insertBefore("#registerForm");
+
+        RegisterFormValidation();
+
+        // If the ErrorMessage element is empty (no errors or cleared), hide it
+        $("#ErrorMessage:empty").hide();
+
+        // ==== Lab 2f ====
+
+        // When the Register button is clicked...
+        $("#submitButton").on("click", (event) =>
+            {
+                // Prevent default form submission
+                event.preventDefault();
+
+
+                // ==== Lab 2h ====
+
+                // If all of the input fields have values...
+                if ($("#firstName").val() && $("#lastName").val() &&
+                    $("#emailAddress").val() && $("#password").val() &&
+                    $("#confirmPassword").val() && $("#ErrorMessage:empty"))
+                {
+                    // Create a new User object with form input as attributes
+                    let newUser = new User();
+                    newUser.FirstName = $("#firstName").val();
+                    newUser.LastName = $("#lastName").val();
+                    newUser.Username = $("#firstName").val().toLowerCase() + $("#lastName").val().toLowerCase();
+                    newUser.Email = $("#emailAddress").val();
+                    newUser.Password = $("#password").val();
+
+                    // Clear all of the form fields
+                    $("#firstName").val("");
+                    $("#lastName").val("");
+                    $("#emailAddress").val("");
+                    $("#password").val("");
+                    $("#confirmPassword").val("");
+
+                    // Display the User object
+                    console.log(newUser.toString());
+                }
+                // If the form wasn't completed when the register button was clicked...
+                else
+                {
+                    // Clear the form's password fields
+                    $("#password").val("");
+                    $("#confirmPassword").val("");
+
+                    // Display an error message for not filling out the form before trying to register.
+                    $("#ErrorMessage").addClass("alert alert-danger").text("The form must be filled to register.").show();
+                }
+            });
+
+
+
     }
 
 
-    // Named function
+    /**
+     * Function that runs at the start of each page loading
+     *
+     */
     function Start()
     {
         console.log("Hello World!");
@@ -414,10 +594,7 @@
                 DisplayRegisterPage();
                 break;
         }
-
-        
     }
-
 
     window.addEventListener("load", Start);
 
