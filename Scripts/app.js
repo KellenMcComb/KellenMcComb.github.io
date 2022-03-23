@@ -116,6 +116,100 @@
             }
         });
     }
+
+    /**
+      * This function is the Callback function for the TaskList
+      *
+      */
+     function DisplayTaskList()
+     {
+         let messageArea = $("#messageArea");
+         messageArea.hide();
+         let taskInput = $("#taskTextInput");
+ 
+         // add a new Task to the Task List
+         $("#newTaskButton").on("click", function()
+         {         
+             AddNewTask();
+         });
+ 
+         taskInput.on("keypress", function(event)
+         {
+           if(event.key == "Enter")
+           {
+             AddNewTask();
+           }
+          });
+ 
+         // Edit an Item in the Task List
+         $("ul").on("click", ".editButton", function()
+         {
+            let editText = $(this).parent().parent().children(".editTextInput");
+            let text = $(this).parent().parent().text();
+            let editTextValue = editText.val();
+            editText.val(text).show().trigger("select");
+            editText.on("keypress", function(event)
+            {
+             if(event.key == "Enter")
+             {
+               if(editText.val() != "" && editTextValue.charAt(0) != " ")
+               {
+                 editText.hide();
+                 $(this).parent().children("#taskText").text(editTextValue);
+                 messageArea.removeAttr("class").hide();
+               }
+               else
+               {
+                 editText.trigger("focus").trigger("select");
+                 messageArea.show().addClass("alert alert-danger").text("Please enter a valid Task.");
+               }
+             }
+            });
+         });
+ 
+         // Delete a Task from the Task List
+         $("ul").on("click", ".deleteButton", function(){
+             if(confirm("Are you sure?"))
+             {
+                 $(this).closest("li").remove();
+             }    
+         });
+     }
+
+     /**
+     * This function adds a new Task to the TaskList
+     */
+      function AddNewTask() 
+      {
+        let messageArea = $("#messageArea");
+        messageArea.hide();
+        let taskInput = $("#taskTextInput");
+        let taskInputValue = taskInput.val();
+  
+        if (taskInput.val() != "" && taskInputValue.charAt(0) != " ") 
+        {
+          let newElement = `
+                <li class="list-group-item" id="task">
+                <span id="taskText">${taskInput.val()}</span>
+                <span class="float-end">
+                    <button class="btn btn-outline-primary btn-sm editButton"><i class="fas fa-edit"></i>
+                    <button class="btn btn-outline-danger btn-sm deleteButton"><i class="fas fa-trash-alt"></i></button>
+                </span>
+                <input type="text" class="form-control edit-task editTextInput">
+                </li>
+                `;
+          $("#taskList").append(newElement);
+          messageArea.removeAttr("class").hide();
+          taskInput.val("");
+        } 
+        else 
+        {
+          taskInput.trigger("focus").trigger("select");
+          messageArea.show().addClass("alert alert-danger").text("Please enter a valid Task.");
+        }
+      }
+
+
     function ContactFormValidation() {
         ValidateField("fullName", /^([A-Z][a-z]{1,3}.?\s)?([A-Z][a-z]{1,})((\s|,|-)([A-Z][a-z]{1,}))*(\s|,|-)([A-Z][a-z]{1,})$/, "Please enter a valid Full Name. This must include at least a Capitalized First Name and a Capitalized Last Name.");
         ValidateField("contactNumber", /^(\+\d{1,3}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, "Please enter a valid Contact Number. Example: (416) 555-5555");
@@ -231,7 +325,7 @@
                 AddNavigationEvents();
                 LoadLink("login");
 
-                // Remove the task-list nav item on logout
+                // 2e Remove the task-list nav item on logout
                 $("#task-list").remove();
             });
         }
@@ -259,7 +353,7 @@
                     messageArea.removeAttr("class").hide();
                     LoadLink("contact-list");
 
-                    // Create the task-list nav item on successful login
+                    // 2e Create the task-list nav item on successful login
                     $("ul").append(`
                     <li class="nav-item" id="task-list">
                         <a class="nav-link" data="task-list"><i class="fas fa-tasks"></i> Task-List</a>
@@ -282,12 +376,26 @@
         AddLinkEvents("login");
     }
 
-    // Display the task list page
-    function DisplayTaskListPage() {
-        console.log("Task-List Page");
-    }
+    /**
+     * Display Task List page
+     * 
+     */
+     function DisplayTaskListPage()
+     {
+         console.log ("Task-List Page");
+ 
+         $("a[data='task-list']").off("click");
+         $("a[data='task-list']").on("click", function()
+         {
+             LoadLink("task-list");
+         });            
+ 
+         DisplayTaskList();
+     }
+
     function Display404Page() {
     }
+
     function ActiveLinkCallBack() {
         switch (router.ActiveLink) {
             case "home": return DisplayHomePage;

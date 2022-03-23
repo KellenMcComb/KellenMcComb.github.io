@@ -226,7 +226,6 @@
     function DisplayContactPage(): void
     {
         console.log("Contact Page");
-
         $("a[data='contact-list']").off("click");
         $("a[data='contact-list']").on("click", function()
         {
@@ -494,6 +493,23 @@
     }
 
     /**
+     * Display Task List page
+     * 
+     */
+    function DisplayTaskListPage(): void
+    {
+        console.log ("Task-List Page");
+
+        $("a[data='task-list']").off("click");
+        $("a[data='task-list']").on("click", function()
+        {
+            LoadLink("task-list");
+        });            
+
+        DisplayTaskList();
+    }
+
+    /**
      * This function adds a new Task to the TaskList
      */
      function AddNewTask() 
@@ -603,7 +619,7 @@
             case "edit": return DisplayEditPage;
             case "login": return DisplayLoginPage;
             case "register": return DisplayRegisterPage;
-            case "task-list": return DisplayTaskList;
+            case "task-list": return DisplayTaskListPage;
             case "404": return Display404Page;
             default:
                 console.error("ERROR: callback does not exist: " + router.ActiveLink);
